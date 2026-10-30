@@ -1,0 +1,100 @@
+:root{
+  color-scheme:dark;--ink:#eaf6ff;--cyan:#46e9ff;--pink:#ff529e;--dark:#080e1e;
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif
+}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--dark);color:var(--ink)}
+button,input{font:inherit}button{cursor:pointer}button:disabled{cursor:wait;opacity:.55}
+.hidden{display:none!important}
+#lobby{height:100%;width:100%;display:flex;align-items:center;justify-content:center;overflow:auto;padding:32px 16px;position:relative}
+.lobby-backdrop{position:fixed;inset:0;background:
+  radial-gradient(circle at 78% 30%,rgba(227,41,128,.23),transparent 28%),
+  radial-gradient(circle at 16% 70%,rgba(44,200,249,.19),transparent 35%),
+  repeating-linear-gradient(90deg,transparent 0,transparent 63px,rgba(84,157,209,.045) 64px),
+  linear-gradient(135deg,#070d1f,#11162d 55%,#100d22);z-index:-1}
+.lobby-card{width:min(540px,100%);padding:34px;background:rgba(8,15,32,.82);border:1px solid rgba(94,211,255,.2);
+  border-radius:20px;box-shadow:0 24px 80px #0008,0 0 80px #1cdcf015;backdrop-filter:blur(14px)}
+.kicker{color:#8cf0ff;letter-spacing:.21em;font-size:10px;font-weight:800}
+h1{font-family:Impact,"Arial Black",system-ui,sans-serif;font-size:clamp(46px,9vw,75px);letter-spacing:.035em;margin:10px 0 4px;line-height:1}
+h1 span,.brand-sm span{color:var(--pink);text-shadow:0 0 32px #ff52886b}
+.lead{line-height:1.8;color:#c1d2e2;font-size:14px;margin:12px 0}
+.connection{border:1px solid #405579;border-radius:9px;background:#111e37;color:#b3c6da;font-size:12px;padding:10px 12px;margin-bottom:18px}
+.connection.ready{border-color:#1f7967;color:#8af5cf;background:#0a2c30}
+.lobby-card label{display:block;font-size:12px;color:#8fa9c1;margin:12px 0 7px;font-weight:700}
+.lobby-card input{width:100%;border:1px solid #334965;border-radius:10px;background:#0b162b;color:white;padding:13px 14px;outline:none}
+.lobby-card input:focus{border-color:var(--cyan);box-shadow:0 0 0 2px #46e9ff25}
+.primary{margin-top:13px;width:100%;border:0;border-radius:10px;background:linear-gradient(110deg,#31e7ed,#588aff);color:#00182d;padding:14px 18px;font-weight:900;box-shadow:0 0 28px #46e9ff24}
+.primary span{font-size:11px;opacity:.8;margin-left:10px}
+.separator{display:flex;align-items:center;gap:12px;margin:18px 0;color:#6d869e;font-size:11px}
+.separator:before,.separator:after{content:"";height:1px;background:#334058;flex:1}
+.join-row{display:flex;gap:9px}.join-row input{min-width:0;flex:1;text-transform:uppercase;letter-spacing:.15em}
+.secondary{background:#20334e;border:1px solid #486887;color:#e0f9ff;border-radius:10px;padding:0 18px;font-weight:800;white-space:nowrap}
+.instructions{margin-top:22px;padding:14px;background:#101c33;border:1px solid #263a58;border-radius:10px;color:#9eb5cb;font-size:12px;line-height:1.7}
+.instructions strong{color:#e8f8ff}.instructions p{margin:6px 0}.instructions b{color:#65eaf6}
+.subnote{font-size:11px;color:#6c8299;margin-top:16px;line-height:1.5}
+#gameRoot,#scene,#scene canvas{position:absolute;inset:0;width:100%;height:100%;overflow:hidden}
+#scene canvas{display:block;touch-action:none}
+#lookZone{position:absolute;right:0;top:0;width:55%;height:100%;z-index:5;touch-action:none}
+.reticle{position:absolute;z-index:6;left:50%;top:50%;width:24px;height:24px;transform:translate(-50%,-50%);pointer-events:none}
+.reticle i{position:absolute;background:#eafcff;box-shadow:0 0 5px #00deff}
+.reticle i:nth-child(1){height:2px;width:7px;top:11px;left:0}.reticle i:nth-child(2){height:2px;width:7px;top:11px;right:0}
+.reticle i:nth-child(3){width:2px;height:7px;left:11px;top:0}.reticle i:nth-child(4){width:2px;height:7px;left:11px;bottom:0}
+.damage-flash{position:absolute;inset:0;z-index:9;background:radial-gradient(transparent 48%,#ff1c50b9);opacity:0;pointer-events:none;transition:opacity .23s}
+.game-top{position:absolute;top:0;left:0;right:0;z-index:12;display:flex;align-items:center;justify-content:space-between;
+  padding:13px max(18px,env(safe-area-inset-right));background:linear-gradient(#071324de,#07132400);gap:10px}
+.brand-sm{font-family:Impact,"Arial Black",sans-serif;font-size:23px;letter-spacing:.07em;white-space:nowrap}
+.room-info{display:flex;align-items:center;gap:8px;background:#07192aba;padding:8px 10px;border:1px solid #446685;border-radius:8px;font-size:12px}
+.room-info>span:first-child{color:#7db7ca;font-size:10px}.room-info strong{color:#71ffdc;letter-spacing:.14em;font-size:14px}
+.room-info button{background:#163c54;border:1px solid #41748a;border-radius:5px;color:#c9f7ff;padding:4px 6px;font-size:10px}
+#occupancy{font-size:11px;color:#afc8dc}.leave{border:1px solid #8f405e;border-radius:8px;padding:8px 13px;background:#320e28aa;color:#ff9ebc;font-weight:800}
+.hud-left{position:absolute;bottom:27px;left:25px;z-index:11;background:linear-gradient(90deg,#071425db,transparent);padding:14px 26px 14px 12px;min-width:210px;pointer-events:none}
+.hud-label{color:#8ee8f6;font-size:10px;font-weight:900;letter-spacing:.2em}
+.hp-text{display:flex;align-items:baseline;gap:4px}.hp-text strong{font-size:44px;line-height:1.1}.hp-text span{font-size:14px;color:#9bb2c5}
+.health-track{height:9px;width:200px;background:#2f2439;border-radius:8px;overflow:hidden}.health-track>div{height:100%;width:100%;background:linear-gradient(90deg,#ff5f79,#ffdd73);transition:width .18s}
+.statline{display:flex;gap:24px;margin-top:12px;font-size:12px;color:#9bb8cb}.statline b{color:#fff;margin-left:3px}
+.abilities{position:absolute;bottom:27px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:10;pointer-events:none}
+.ability{width:110px;padding:9px 10px;border:1px solid #567394c9;border-top:2px solid #36cfff;background:#081a2dc9;border-radius:7px;text-align:center;backdrop-filter:blur(5px)}
+.ability span{display:block;color:#80cbd9;font-size:9px}.ability strong{display:block;font-size:12px;margin:5px 0;white-space:nowrap}.ability small{color:#7bfce7;font-size:10px;font-weight:800}
+.scoreboard{position:absolute;top:72px;right:18px;width:205px;background:#07152bcb;border:1px solid #3e5975;border-radius:9px;padding:9px;z-index:10;pointer-events:none}
+.board-head{display:flex;justify-content:space-between;color:#8ce9ff;font-weight:900;font-size:11px;letter-spacing:.08em;padding:4px}
+.board-head span{color:#a2adbc}.score-row{display:flex;justify-content:space-between;font-size:11px;padding:7px 5px;border-top:1px solid #34506b66;gap:8px}
+.score-row b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:700}.score-row.me{color:#6cf5dd}.score-row span{color:#acc3d4;white-space:nowrap}
+#killFeed{position:absolute;top:86px;left:17px;z-index:11;pointer-events:none;display:flex;flex-direction:column;gap:5px;font-size:12px;color:#ffd2e5}
+#killFeed div{background:#261225bd;border-left:2px solid #ff589d;padding:5px 9px;border-radius:4px}
+#toast{position:absolute;top:25%;left:50%;transform:translateX(-50%);z-index:15;color:#c3faff;font-weight:800;text-shadow:0 1px 14px #020617;pointer-events:none;text-align:center}
+#respawnOverlay{position:absolute;inset:0;z-index:13;background:#11091dc4;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;text-align:center;pointer-events:none}
+#respawnOverlay b{font-size:clamp(24px,5vw,45px);letter-spacing:.08em;color:#ff6e9b}#respawnOverlay span{color:#e8e8f2}
+#focusHint{position:absolute;left:50%;bottom:160px;transform:translateX(-50%);z-index:10;padding:9px 15px;background:#071527cc;color:#a9f7ff;border-radius:9px;font-size:12px;pointer-events:none;text-align:center}
+#mobileControls{display:none}
+@media (pointer:coarse),(max-width:850px){
+  .game-top{padding:calc(7px + env(safe-area-inset-top)) 11px 8px}
+  .brand-sm{font-size:16px}
+  .room-info{gap:5px;font-size:10px;padding:5px}.room-info strong{font-size:12px}
+  .scoreboard{top:57px;right:10px;width:160px;padding:5px}.score-row{padding:4px;font-size:10px}
+  .hud-left{bottom:auto;top:67px;left:10px;padding:5px;min-width:110px}
+  .hp-text strong{font-size:28px}.health-track{width:116px;height:6px}.statline{font-size:10px;gap:9px;margin-top:5px}
+  .abilities{bottom:calc(6px + env(safe-area-inset-bottom));gap:4px;left:50%}
+  .ability{width:68px;padding:4px 3px}.ability span{font-size:7px}.ability strong{font-size:9px;margin:2px}.ability small{font-size:8px}
+  #mobileControls{display:block;position:absolute;inset:0;z-index:10;pointer-events:none}
+  .joystick{position:absolute;bottom:calc(74px + env(safe-area-inset-bottom));left:clamp(16px,6vw,50px);width:116px;height:116px;border-radius:50%;border:2px solid #72edffd0;background:#14547e62;pointer-events:auto;touch-action:none;box-shadow:0 0 30px #46e9ff30 inset}
+  #stick{position:absolute;width:50px;height:50px;left:31px;top:31px;border-radius:50%;background:radial-gradient(#84fcff,#2486ac);box-shadow:0 0 13px #7effff88;pointer-events:none}
+  .touch-actions{position:absolute;right:clamp(11px,4vw,30px);bottom:calc(67px + env(safe-area-inset-bottom));display:flex;align-items:flex-end;flex-direction:column;gap:8px;pointer-events:auto}
+  .touch-row{display:flex;gap:7px}.touch-btn{min-width:60px;height:44px;background:#133555c9;border:1px solid #61cfea;color:#d2faff;font-weight:900;font-size:11px;border-radius:12px;touch-action:none}
+  .touch-btn.fire{min-width:78px;height:61px;border-radius:50%;background:#a73566d6;border:2px solid #ffb0d4;box-shadow:0 0 18px #fb327a6d;font-size:15px}
+  .touch-btn.active{background:#55cee8!important;color:#041322}
+  .look-label{position:absolute;right:14px;top:38%;font-size:10px;color:#c5effc90}
+  #focusHint{bottom:12px}
+}
+@media (max-width:600px){
+  .lobby-card{padding:22px}
+  .instructions{font-size:11px}
+  .scoreboard{width:135px}
+  .abilities{bottom:5px;left:50%}.ability{width:53px}.ability strong{font-size:8px}
+  .joystick{bottom:95px;left:15px;width:100px;height:100px}#stick{left:25px;top:25px}
+}
+@media (max-height:450px) and (pointer:coarse) {
+  .joystick{bottom:45px;width:92px;height:92px}
+  #stick{left:19px;top:19px}
+  .touch-actions{bottom:40px;gap:4px}.touch-btn{height:36px}.touch-btn.fire{height:48px}
+  .abilities{bottom:3px}
+  .scoreboard{top:45px}
+}
