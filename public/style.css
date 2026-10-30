@@ -65,7 +65,7 @@ h1 span,.brand-sm span{color:var(--pink);text-shadow:0 0 32px #ff52886b}
 #respawnOverlay b{font-size:clamp(24px,5vw,45px);letter-spacing:.08em;color:#ff6e9b}#respawnOverlay span{color:#e8e8f2}
 #focusHint{position:absolute;left:50%;bottom:160px;transform:translateX(-50%);z-index:10;padding:9px 15px;background:#071527cc;color:#a9f7ff;border-radius:9px;font-size:12px;pointer-events:none;text-align:center}
 #mobileControls{display:none}
-@media (pointer:coarse),(max-width:850px){
+@media (pointer:coarse),(any-pointer:coarse),(max-width:850px){
   .game-top{padding:calc(7px + env(safe-area-inset-top)) 11px 8px}
   .brand-sm{font-size:16px}
   .room-info{gap:5px;font-size:10px;padding:5px}.room-info strong{font-size:12px}
@@ -91,7 +91,7 @@ h1 span,.brand-sm span{color:var(--pink);text-shadow:0 0 32px #ff52886b}
   .abilities{bottom:5px;left:50%}.ability{width:53px}.ability strong{font-size:8px}
   .joystick{bottom:95px;left:15px;width:100px;height:100px}#stick{left:25px;top:25px}
 }
-@media (max-height:450px) and (pointer:coarse) {
+@media (max-height:450px) and (any-pointer:coarse) {
   .joystick{bottom:45px;width:92px;height:92px}
   #stick{left:19px;top:19px}
   .touch-actions{bottom:40px;gap:4px}.touch-btn{height:36px}.touch-btn.fire{height:48px}
