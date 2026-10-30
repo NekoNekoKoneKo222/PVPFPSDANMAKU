@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+  <meta name="theme-color" content="#080e1e">
+  <title>BULLET BREAK — FPS弾幕PvP</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <main id="lobby">
+    <div class="lobby-backdrop"></div>
+    <div class="lobby-card">
+      <div class="kicker">ONLINE • BULLET-HELL FPS • 5 PLAYER ROOMS</div>
+      <h1>BULLET <span>BREAK</span></h1>
+      <p class="lead">避けろ。撃て。弾幕を突破しろ。<br>ブラウザで遊べるオンラインFPS弾幕PvP試作版。</p>
+      <div id="connection" class="connection">サーバーに接続中…</div>
+      <label for="playerName">プレイヤー名</label>
+      <input id="playerName" maxlength="16" placeholder="PILOT" autocomplete="nickname">
+      <button id="createBtn" class="primary">新しい部屋を作成 <span>最大5人</span></button>
+      <div class="separator"><span>または部屋に参加</span></div>
+      <div class="join-row">
+        <input id="joinCode" maxlength="6" placeholder="6桁の部屋コード" autocapitalize="characters" autocomplete="off" spellcheck="false">
+        <button id="joinBtn" class="secondary">参加する</button>
+      </div>
+      <div class="instructions">
+        <strong>PC / iPad / キーボード対応</strong>
+        <p><b>WASD</b> 移動 ／ <b>矢印キー</b> 視点 ／ <b>J</b> 射撃 ／ <b>K</b> 扇弾幕 ／ <b>L</b> リング弾幕 ／ <b>Shift</b> ダッシュ ／ <b>Space</b> ジャンプ</p>
+        <p>マウスでは視点操作・左クリック射撃・右クリック扇弾幕・Eリング弾幕。iPadは画面のスティックとタッチボタンでも操作可能。</p>
+      </div>
+      <div class="subnote">試作版：ルームはサーバーのメモリに保存され、再起動すると消えます。ログイン不要。</div>
+    </div>
+  </main>
+
+  <section id="gameRoot" class="hidden" aria-label="3D FPSゲーム画面">
+    <div id="scene"></div>
+    <div id="lookZone" aria-label="視点移動エリア"></div>
+    <div class="reticle" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+    <div class="damage-flash" id="damageFlash"></div>
+    <header class="game-top">
+      <div class="brand-sm">BULLET<span>BREAK</span></div>
+      <div class="room-info"><span>ROOM</span><strong id="activeCode">------</strong><button id="copyCode" title="コードをコピー">コピー</button><span id="occupancy">1/5</span></div>
+      <button id="leaveBtn" class="leave">退出</button>
+    </header>
+    <div class="hud-left">
+      <div class="hud-label">HEALTH</div>
+      <div class="hp-text"><strong id="healthText">100</strong><span>/100</span></div>
+      <div class="health-track"><div id="healthFill"></div></div>
+      <div class="statline"><span>撃破 <b id="killsCount">0</b></span><span>デス <b id="deathCount">0</b></span></div>
+    </div>
+    <div class="abilities">
+      <div class="ability"><span>J / CLICK</span><strong>パルス弾</strong><small>連射</small></div>
+      <div class="ability"><span>K / RIGHT</span><strong>扇弾幕</strong><small id="fanCd">READY</small></div>
+      <div class="ability"><span>L / E</span><strong>リング弾幕</strong><small id="burstCd">READY</small></div>
+      <div class="ability"><span>SHIFT</span><strong>ダッシュ</strong><small id="dashCd">READY</small></div>
+    </div>
+    <aside class="scoreboard">
+      <div class="board-head">LIVE SCORE <span id="playerCount">1/5</span></div>
+      <div id="scoreRows"></div>
+    </aside>
+    <div id="killFeed"></div>
+    <div id="toast" role="status" aria-live="polite"></div>
+    <div id="respawnOverlay" class="hidden"><b>YOU WERE ELIMINATED</b><span id="respawnCountdown">リスポーンまで 3 秒</span></div>
+    <div id="focusHint" class="hidden">画面をタップ / クリックで操作開始</div>
+    <div id="mobileControls">
+      <div class="joystick" id="joystick" aria-label="移動スティック"><div id="stick"></div></div>
+      <div class="touch-actions">
+        <button class="touch-btn fire" id="touchFire" aria-label="射撃">FIRE</button>
+        <div class="touch-row">
+          <button class="touch-btn" id="touchFan" aria-label="扇弾幕">FAN</button>
+          <button class="touch-btn" id="touchBurst" aria-label="リング弾幕">RING</button>
+        </div>
+        <div class="touch-row">
+          <button class="touch-btn" id="touchJump" aria-label="ジャンプ">JUMP</button>
+          <button class="touch-btn" id="touchDash" aria-label="ダッシュ">DASH</button>
+        </div>
+      </div>
+      <div class="look-label">右側スワイプ：視点</div>
+    </div>
+  </section>
+  <script type="module" src="/client.js"></script>
+</body>
+</html>
