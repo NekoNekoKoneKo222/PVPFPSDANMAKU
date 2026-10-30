@@ -204,7 +204,7 @@ function snapshot(room, now = Date.now() / 1000) {
   return {
     type: "state",
     players: [...room.players.values()].map(p => ({
-      id: p.id, name: p.name, x: p.x, y: p.y, z: p.z,
+      id: p.id, name: p.name, x: p.x, y: p.y, z: p.z, vy: p.vy,
       yaw: p.yaw, hp: p.hp, kills: p.kills, deaths: p.deaths, alive: p.alive,
       invulnerable: now < p.invulnerableUntil,
       respawn: p.alive ? 0 : Math.max(0, p.respawnAt - now),
