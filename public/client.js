@@ -139,7 +139,7 @@ function enterGame() {
   others.clear();
   for (const entry of projectiles.values()) scene.remove(entry.mesh);
   projectiles.clear();
-  const touchMode = window.matchMedia("(pointer: coarse)").matches;
+  const touchMode = window.matchMedia("(any-pointer: coarse)").matches;
   $("focusHint").classList.toggle("hidden", touchMode);
   resize();
   notice("ルームに接続しました！ コード：" + roomCode, 3200);
@@ -175,7 +175,7 @@ function buildWorld() {
   scene.background = new THREE.Color(0x070d1d);
   scene.fog = new THREE.FogExp2(0x080d20, 0.018);
   camera = new THREE.PerspectiveCamera(78, 1, 0.06, 180);
-  renderer = new THREE.WebGLRenderer({ antialias: !matchMedia("(pointer: coarse)").matches, powerPreference: "high-performance" });
+  renderer = new THREE.WebGLRenderer({ antialias: !matchMedia("(any-pointer: coarse)").matches, powerPreference: "high-performance" });
   renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 1.6));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -458,12 +458,12 @@ document.addEventListener("mouseup", event => {
 });
 document.addEventListener("contextmenu", event => { if (inGame) event.preventDefault(); });
 $("scene").addEventListener("pointerdown", event => {
-  if (!inGame || event.pointerType === "touch" || matchMedia("(pointer: coarse)").matches) return;
+  if (!inGame || event.pointerType === "touch" || matchMedia("(any-pointer: coarse)").matches) return;
   if (!document.pointerLockElement) $("scene").requestPointerLock?.();
 });
 $("lookZone").addEventListener("pointerdown", event => {
   if (!inGame) return;
-  if (event.pointerType !== "touch" && !matchMedia("(pointer: coarse)").matches) {
+  if (event.pointerType !== "touch" && !matchMedia("(any-pointer: coarse)").matches) {
     if (!document.pointerLockElement) $("scene").requestPointerLock?.();
     return;
   }
