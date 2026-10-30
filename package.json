@@ -1,0 +1,15 @@
+{
+  "name": "bullet-break",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Browser FPS bullet-hell multiplayer prototype (up to five players per room)",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "start": "node server/index.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "three": "^0.180.0",
+    "ws": "^8.18.3"
+  }
+}
