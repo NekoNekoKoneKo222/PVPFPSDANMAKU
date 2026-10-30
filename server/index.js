@@ -14,6 +14,7 @@ const rooms = new Map();
 const clients = new Set();
 const PUBLIC = path.resolve(__dirname, "../public");
 const THREE_MODULE = require.resolve("three/build/three.module.js");
+const THREE_CORE_MODULE = require.resolve("three/build/three.core.js");
 const MIMES = {
   ".html": "text/html; charset=utf-8",
   ".js": "text/javascript; charset=utf-8",
@@ -46,6 +47,7 @@ const server = http.createServer((req, res) => {
   }
   if (req.method !== "GET" && req.method !== "HEAD") { res.writeHead(405); res.end(); return; }
   if (pathname === "/vendor/three.js") { serveFile(res, THREE_MODULE); return; }
+  if (pathname === "/vendor/three.core.js") { serveFile(res, THREE_CORE_MODULE); return; }
   let relative;
   try { relative = decodeURIComponent(pathname); } catch { res.writeHead(400); res.end(); return; }
   const absolute = path.resolve(PUBLIC, "." + relative, relative.endsWith("/") ? "index.html" : "");
