@@ -1,4 +1,5 @@
 import * as THREE from "/vendor/three.js";
+import { addNeonShibuya } from "/city.js";
 
 const $ = id => document.getElementById(id);
 const lobby = $("lobby");
@@ -13,6 +14,7 @@ let latestPlayers = [];
 let camera, renderer, scene, worldReady = false;
 let self = null, selfPosition = new THREE.Vector3(0, 0, 0);
 let yaw = 0, pitch = 0;
+let verticalVelocity = 0;
 let mouseFire = false, mouseAlt = false;
 const touchHeld = { fire: false, alt: false, burst: false, dash: false, jump: false };
 const stick = { x: 0, y: 0 };
@@ -128,6 +130,8 @@ function enterGame() {
   self = null;
   latestPlayers = [];
   selfPosition.set(0, 0, 0);
+  selfPosition.userDataInitialized = false;
+  verticalVelocity = 0;
   yaw = 0; pitch = 0;
   $("activeCode").textContent = roomCode;
   $("killFeed").replaceChildren();
@@ -172,30 +176,31 @@ function addKill(text) {
 function buildWorld() {
   worldReady = true;
   scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x070d1d);
-  scene.fog = new THREE.FogExp2(0x080d20, 0.018);
+  scene.background = new THREE.Color(0x17253c);
+  scene.fog = new THREE.FogExp2(0x243753, 0.010);
   camera = new THREE.PerspectiveCamera(78, 1, 0.06, 180);
   renderer = new THREE.WebGLRenderer({ antialias: !matchMedia("(any-pointer: coarse)").matches, powerPreference: "high-performance" });
   renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 1.6));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.28;
+  renderer.toneMappingExposure = 1.72;
   $("scene").appendChild(renderer.domElement);
 
-  scene.add(new THREE.HemisphereLight(0x6bb9ff, 0x16142a, 2.1));
-  const sun = new THREE.DirectionalLight(0x77cfff, 1.45);
+  scene.add(new THREE.HemisphereLight(0xd1f0ff, 0x45516c, 3.2));
+  scene.add(new THREE.AmbientLight(0x9ab8ff, 0.65));
+  const sun = new THREE.DirectionalLight(0xdcefff, 2.3);
   sun.position.set(-10, 24, 16);
   scene.add(sun);
-  const accent = new THREE.PointLight(0xff478f, 70, 32);
+  const accent = new THREE.PointLight(0xff679e, 45, 35);
   accent.position.set(11, 8, -13);
   scene.add(accent);
 
   const floor = new THREE.Mesh(new THREE.PlaneGeometry(44, 44),
-    new THREE.MeshStandardMaterial({ color: 0x0c1830, metalness: 0.5, roughness: 0.72 }));
+    new THREE.MeshStandardMaterial({ color: 0x37465a, emissive: 0x1b3244, emissiveIntensity: 0.65, metalness: 0.2, roughness: 0.8 }));
   floor.rotation.x = -Math.PI / 2;
   floor.position.y = -0.015;
   scene.add(floor);
-  const grid = new THREE.GridHelper(44, 22, 0x1b6a9b, 0x15364a);
+  const grid = new THREE.GridHelper(44, 22, 0x3fa7c0, 0x355769);
   grid.position.y = 0.01;
   scene.add(grid);
 
@@ -229,12 +234,14 @@ function buildWorld() {
     scene.add(top);
   });
 
+  addNeonShibuya(scene, THREE);
+
   const ringGeo = new THREE.TorusGeometry(2.5, 0.035, 6, 100);
   const ringMat = new THREE.MeshBasicMaterial({ color: 0x15caeb, transparent: true, opacity: 0.3 });
   for (const [x, z] of [[-16, -16], [16, 16], [-16, 16], [16, -16]]) {
     const ring = new THREE.Mesh(ringGeo, ringMat);
     ring.rotation.x = -Math.PI / 2;
-    ring.position.set(x, 0.035, z);
+    ring.position.set(x, 0.16, z);
     scene.add(ring);
   }
 
@@ -288,8 +295,19 @@ function applyState(data) {
     if (!selfPosition.userDataInitialized || selfPosition.distanceTo(target) > 6 || !self.alive) {
       selfPosition.copy(target);
       selfPosition.userDataInitialized = true;
+      verticalVelocity = self.alive ? (self.vy || 0) : 0;
+      if (camera) camera.position.set(self.x, self.y + 1.55, self.z);
     } else {
-      selfPosition.lerp(target, 0.34);
+      selfPosition.x = THREE.MathUtils.lerp(selfPosition.x, target.x, 0.34);
+      selfPosition.z = THREE.MathUtils.lerp(selfPosition.z, target.z, 0.34);
+      const heightError = target.y - selfPosition.y;
+      if (Math.abs(heightError) > 1.2) {
+        selfPosition.y = target.y;
+        verticalVelocity = self.vy || 0;
+      } else {
+        selfPosition.y += heightError * 0.19;
+        verticalVelocity = THREE.MathUtils.lerp(verticalVelocity, self.vy || 0, 0.13);
+      }
     }
     const hp = Math.max(0, self.hp);
     $("healthText").textContent = hp;
@@ -373,8 +391,14 @@ function localCollision(x, z) {
     z + radius > o.z - o.d / 2 && z - radius < o.z + o.d / 2);
 }
 function predictSelf(dt) {
-  if (!self?.alive) return;
+  if (!self?.alive) { verticalVelocity = 0; return; }
   const input = controls();
+  // Predict vertical motion at the rendering frame rate instead of
+  // stepping only when the server sends a position snapshot.
+  if (selfPosition.y < 0.025 && input.jump) verticalVelocity = 8.4;
+  verticalVelocity -= 21 * dt;
+  selfPosition.y = Math.max(0, selfPosition.y + verticalVelocity * dt);
+  if (selfPosition.y === 0) verticalVelocity = 0;
   let mx = input.mx, mz = input.mz;
   const magnitude = Math.hypot(mx, mz);
   if (magnitude > 1) { mx /= magnitude; mz /= magnitude; }
@@ -401,7 +425,9 @@ function animate(now) {
   predictSelf(dt);
 
   if (self) {
-    camera.position.set(selfPosition.x, selfPosition.y + 1.55, selfPosition.z);
+    camera.position.x = selfPosition.x;
+    camera.position.z = selfPosition.z;
+    camera.position.y = THREE.MathUtils.damp(camera.position.y, selfPosition.y + 1.55, 15, dt);
     camera.rotation.order = "YXZ";
     camera.rotation.y = -yaw;
     camera.rotation.x = pitch;
@@ -457,6 +483,9 @@ document.addEventListener("mouseup", event => {
   if (event.button === 2) mouseAlt = false;
 });
 document.addEventListener("contextmenu", event => { if (inGame) event.preventDefault(); });
+document.addEventListener("dblclick", event => {
+  if (inGame && event.cancelable) event.preventDefault();
+}, { passive: false });
 $("scene").addEventListener("pointerdown", event => {
   if (!inGame || event.pointerType === "touch" || matchMedia("(any-pointer: coarse)").matches) return;
   if (!document.pointerLockElement) $("scene").requestPointerLock?.();
